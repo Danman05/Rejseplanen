@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/site.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <div id="container">
+            <a href="index.html"><img src="../Images/logo_240x100.png"></a>
+        </div>
+    </header>
+    <div class="searchDiv">
+        <div>
+            <label class="afgangstavle">Afgangstavle</label>
+
+            <form method="get" class="inputForm" onsubmit="return false;">
+                <!-- <button id="show-more-btn" style="display: none;">Se flere resultater</button> -->
+                <input class="input-location" type="text" placeholder="Skriv stop eller station" name="station"
+                    id="Station" autocomplete="off" required>
+                <ul id="results-list"></ul>
+
+                <input class="input-date" type="datetime-local" name="date" id="Date" required>
+                <button class="button-field" type="submit" onclick="searchJourney()">Find</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div id="result-for"></div>
+    <hr>
+    <div id="columns">
+        <div id="train">
+            <div id="trainIC"></div>
+            <div id="trainRE"></div>
+            <div id="train-s"></div>
+            <div id="tog"></div>
+        </div>
+        <div id="bus"></div>
+        <div id="metro"></div>
+    </div>
+    <script src="../JS/site.js"></script>
+</body>
+
+</html>
