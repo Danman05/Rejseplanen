@@ -1,17 +1,19 @@
 body {
     margin: 0;
-    padding: 0;     
+    padding: 0;
 }
+
 .searchDiv {
     background: #000d2a;
     width: 650px;
     height: 135px;
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
     margin-top: 50px;
     margin-left: 27.5%;
 }
+
 .afgangstavle {
     color: #eaba2a;
     align-items: center;
@@ -19,43 +21,51 @@ body {
     margin-left: 225px;
     font-size: 24px;
 }
+
 .inputForm {
     display: flex;
     height: 50px;
 }
+
 .input-location::placeholder {
     color: black;
 }
+
 .input-location {
-    color: black ;
+    color: black;
     width: 300px;
     margin-right: 8px;
 }
+
 .input-date {
     color: black;
-    width: 200px;   
+    width: 200px;
     margin-right: 8px;
 }
+
 .button-field {
     background-color: #eaba2a;
     margin-left: 8px;
     border-radius: 10px;
     width: 75px;
 }
+
 header {
     background-color: #ffffff;
     position: relative;
     min-height: 70px;
     box-sizing: border-box;
 }
+
 #container {
     background-color: lightgray;
     display: flex;
     align-items: center;
 }
+
 #results-list {
     position: absolute;
-    list-style:none;
+    list-style: none;
     padding: 0px;
     margin-top: 50px;
     background-color: white;
