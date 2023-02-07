@@ -1,6 +1,7 @@
 body {
     margin: 0;
     padding: 0;
+    background-color: #F2F3F5;
 }
 
 .searchDiv {
@@ -58,7 +59,7 @@ header {
 }
 
 #container {
-    background-color: lightgray;
+    background-color: white;
     display: flex;
     align-items: center;
 }
@@ -115,4 +116,23 @@ li:hover {
 #colorTrainOther {
     background-color: rgb(245, 138, 31);
     color: rgb(255, 255, 255);
+}
+
+#trainIC, #trainRE, #train-s, #trainLyn, #tog {
+    width: 50%;
+    margin: auto;
+    background-color: #ffffff;
+}
+#busBus, #busExb, #busOther {
+    width: 50%;
+    margin: auto;
+    background-color: #ffffff;
+}
+#metroMetro, #metroOther {
+    width: 50%;
+    margin: auto;
+    background-color: #ffffff;
+}
+.background {
+    background-color: lightgray;
 }
