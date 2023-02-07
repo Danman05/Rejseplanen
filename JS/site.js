@@ -6,7 +6,7 @@
 // http://xmlopen.rejseplanen.dk/bin/rest.exe/location?input=Ringsted%20St.
 
 
-// Find all departures from the given id(station) and date & time, also removes all results from busses
+// Find all departures from the given id(station) and date & time, also removes all busses from results
 // http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=008600611&date=27.01.2023&time=11:52&useBus=0
 
 const inputField = document.querySelector("#Station");
@@ -14,26 +14,12 @@ const resultFor = document.querySelector('#result-for')
 const list = document.querySelector('#results-list');
 
 
-const toggleButton = document.querySelector("#toggleButton");
-const collapsibleDiv = document.querySelector("#collapsibleDiv");
-
-toggleButton.addEventListener("click", function () {
-  if (collapsibleDiv.style.display === "none") {
-    collapsibleDiv.style.display = "block";
-    toggleButton.innerHTML = "Skjul tog";
-  } else {
-    collapsibleDiv.style.display = 'none';
-    toggleButton.innerHTML = "Udvid tog";
-  }
-});
-
-// const showMoreBtn = document.querySelector("#show-more-btn");
-
 let stopNames;
+
 const input = document.querySelector('input');
 input.addEventListener('input', debounce(async function () {
 
-  // If input.value.length is greater than 3 it can diffrent stops, the user can click the button to generate more stops
+  // If input.value.length is less than 3 it can't show stops
   if (input.value.length < 3) {
     list.style.display = 'none';
     return;
@@ -42,13 +28,14 @@ input.addEventListener('input', debounce(async function () {
   // fetches data with await, and gets all stopNames
   const response = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/location?input=${input.value}&format=json`);
   const data = await response.json();
+
   stopNames = data.LocationList.StopLocation.map(result => result.name);
   list.innerHTML = "";
 
-  // makes the list visibil when input box is pressed
+  // makes the list visible when input box is pressed
   list.style.display = 'block';
 
-
+  // Only displays 10 results in the suggestion box
   let displayedResult = Array.from(stopNames.slice(0, 10));
   displayedResult.forEach((result) => {
     let item = document.createElement("li");
@@ -56,41 +43,23 @@ input.addEventListener('input', debounce(async function () {
     list.appendChild(item);
   });
 
-  list.addEventListener('click', (event) => {
-    console.log('Click event fired');
-    console.log('Target: ', event.target);
-
-    if (event.target.tagName === 'LI') {
-      console.log('Text content: ', event.target.textContent);
-      inputField.value = event.target.textContent;
-
-      // hides the list when user selects an option
-      list.style.display = 'none';
-    }
-
-  });
-
-  // Click eventlistener for showing more stops
-  // showMoreBtn.addEventListener("click", (event) => {
-  //   fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/location?input=${input.value}&format=json`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       let results = data.LocationList.StopLocation.map(result => result.name);
-  //       const currentResults = list.querySelectorAll("li");
-  //       const startIndex = currentResults.length;
-  //       let endIndex = startIndex + 10;
-  //       results = Array.from(results.slice(startIndex, endIndex)); // Show next 10 results
-  //       results.forEach((result) => {
-  //         const item = document.createElement("li");
-  //         item.innerText = result;
-  //         list.appendChild(item);
-  //       })
-  //     });
-  // });
-
-
   // Render the results to the page
 }, 100));
+
+list.addEventListener('click', (event) => {
+  console.log('Click event fired');
+  console.log('Target: ', event.target);
+
+  if (event.target.tagName === 'LI') {
+    console.log('Text content: ', event.target.textContent);
+    inputField.value = event.target.textContent;
+
+    // hides the list when user selects an option
+    list.style.display = 'none';
+    event.stopPropagation();
+  }
+  
+});
 
 // Debounce function to limit the number of API calls
 function debounce(fn, delay) {
@@ -106,8 +75,10 @@ function debounce(fn, delay) {
 async function searchJourney() {
 
   const station = document.getElementById("Station").value;
+
   //  rawdate example: 2023-01-31T11:08 
   const rawdate = document.getElementById("Date").value;
+
   // converts the rawdate to the correct date format from YYYY-MM-DD to DD-MM-YYYY using the substring method
   const dd = rawdate.substring(8, 10);
   const mm = rawdate.substring(5, 7);
@@ -118,7 +89,9 @@ async function searchJourney() {
 
   // string for the the in the format of 00:00
   const time = rawdate.substring(11, 16);
+
   let stationId = "";
+
   fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/location?input=${station}`)
     .then(response => response.text())
     .then(data => {
@@ -127,33 +100,31 @@ async function searchJourney() {
 
       stationId = xlm.getElementsByTagName("StopLocation")[0].getAttribute("id");
       stationName = xlm.getElementsByTagName("StopLocation")[0].getAttribute("name");
-      console.log(stationName);
+      
       if (resultFor.textContent.trim()) {
         resultFor.textContent = "";
       }
       const result_for = document.createElement('h4');
       result_for.innerText = `Viser resultater for ${stationName}`;
       resultFor.appendChild(result_for);
-      console.log(`First element for search: ${station} is ${stationId}`);
-      console.log(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&format=json`);
+
       getTrainData(stationId, date, time);
       getBusData(stationId, date, time);
       getMetroData(stationId, date, time);
     })
     .catch(error => console.error(error));
 
-  // Show Bus
+  // Get 20 results from Bus
   // http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useTog=0&useMetro=0&format=json
-  // Show Metro
+  // Get 20 results from Metro
   // http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useTog=0&useBus=0&format=json
-  // Show Tog
+  // Get 20 results from Tog
   // http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useMetro=0&format=json
 
 
 }
 async function getTrainData(stationId, date, time) {
 
-  const train = document.querySelector("#train");
   const trainIC = document.querySelector('#trainIC');
   const trainRE = document.querySelector('#trainRE');
   const train_s = document.querySelector('#train-s');
@@ -162,29 +133,20 @@ async function getTrainData(stationId, date, time) {
 
   const trainResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useMetro=0&format=json`);
   const trainData = await trainResponse.json();
-  console.log(trainData);
-  console.log(trainResponse);
+
+  removeOld(trainIC);
+  removeOld(trainRE);
+  removeOld(train_s);
+  removeOld(traintog);
+  removeOld(trainLyn);
+
   if (trainData.DepartureBoard.Departure == 0 || trainData.DepartureBoard.Departure == null) {
     console.log("No train data found for this stop");
-    removeOld(trainIC);
-    removeOld(trainRE);
-    removeOld(train_s);
-    removeOld(traintog);
-    removeOld(trainLyn);
   }
   else {
-
     try {
-      removeOld(trainIC);
-      removeOld(trainRE);
-      removeOld(train_s);
-      removeOld(trainLyn)
-      removeOld(traintog);
-
       let array = trainData.DepartureBoard.Departure;
-
       for (let t of array) {
-
         switch (t.type) {
           case 'IC':
             const ic = document.createElement('p');
@@ -213,12 +175,6 @@ async function getTrainData(stationId, date, time) {
             break;
         }
       }
-
-
-      // if (trainIC.innerHTML !== "" || trainRE.innerHTML !== "" || train_s.innerHTML !== "" || traintog.innerHTML !== "" ) {
-      //   let trainHeader = createElement("h1", "Tog");
-      //   train.insertBefore(trainHeader, train.firstChild)
-      // }
       if (trainIC.innerHTML !== "") {
         const hrIc = document.createElement("hr");
         trainIC.appendChild(hrIc);
@@ -249,38 +205,32 @@ async function getTrainData(stationId, date, time) {
         let togHeader = createElement("h4", "Øvrige tog");
         traintog.insertBefore(togHeader, traintog.firstChild);
       }
-
-
     } catch (error) {
-
+      console.log(error);
     }
   }
 }
 
 async function getBusData(stationId, date, time) {
+
   const bus = document.querySelector("#busBus");
   const exp = document.querySelector("#busExb");
   const other = document.querySelector("#busOther");
+
   const busResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useTog=0&useMetro=0&format=json`);
   const busData = await busResponse.json();
-  console.log(busData);
-  console.log(busResponse);
-  if (busData.DepartureBoard.Departure == 0 || busData.DepartureBoard.Departure == null) {
-    console.log("No bus data found for this stop")
-    removeOld(bus);
-    removeOld(exp);
-    removeOld(other);
-  }
 
+  removeOld(bus);
+  removeOld(exp);
+  removeOld(other);
+
+  if (busData.DepartureBoard.Departure == 0 || busData.DepartureBoard.Departure == null) {
+    console.log("No bus data found for this stop");
+  }
   else {
     try {
-      removeOld(bus);
-      removeOld(exp);
-      removeOld(other);
       const array = busData.DepartureBoard.Departure;
-
       for (const b of array) {
-
         switch (b.type) {
           case 'BUS':
             const busBus = document.createElement('p');
@@ -299,7 +249,6 @@ async function getBusData(stationId, date, time) {
             break;
         }
       }
-
       if (bus.innerHTML !== "") {
         const hrBus = document.createElement("hr");
         bus.appendChild(hrBus);
@@ -319,30 +268,28 @@ async function getBusData(stationId, date, time) {
         other.insertBefore(otherHeader, other.firstChild);
       }
     } catch (error) {
-
+      console.log(error);
     }
   }
 }
+
 async function getMetroData(stationId, date, time) {
+
   const metro = document.querySelector("#metroMetro");
   const other = document.querySelector('#metroOther');
-  const metroResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useTog=0&format=json`);
-  console.log(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useTog=0&format=json`);
-  const metroData = await metroResponse.json();
-  console.log(metroData);
-  console.log(metroResponse);
-  if (metroData.DepartureBoard.Departure == 0 || metroData.DepartureBoard.Departure == null) {
-    console.log("No metro data found for this stop")
-    removeOld(metro)
-  }
 
+  const metroResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useTog=0&format=json`);
+  const metroData = await metroResponse.json();
+  
+  removeOld(metro);
+
+  if (metroData.DepartureBoard.Departure == 0 || metroData.DepartureBoard.Departure == null) {
+    console.log("No metro data found for this stop");
+  }
   else {
     try {
-      removeOld(metro)
       const array = metroData.DepartureBoard.Departure;
-
       for (const m of array) {
-
         switch (m.type) {
           case 'M':
             const metroMetro = document.createElement('p');
@@ -368,13 +315,11 @@ async function getMetroData(stationId, date, time) {
         let otherHeader = createElement("h4", "Øvrige metro");
         other.insertBefore(otherHeader, other.firstChild);
       }
-
     } catch (error) {
       console.error(error);
     }
   }
 }
-
 
 function removeOld(element) {
   if (element.textContent.trim()) {
