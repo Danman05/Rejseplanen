@@ -76,3 +76,38 @@ li:hover {
     background-color: lightgray;
     cursor: pointer;
 }
+
+#colorBus {
+    background-color: rgb(253,174,0);
+    color: rgb(255,255,255);
+}
+#colorBusOther {
+    background-color: rgb(0,101,170);
+    color: rgb(255,255,255);
+}
+#colorMetro {
+    background-color: rgb(118,112,178);
+    color: rgb(255,255,255);
+}
+#colorTrainIC {
+    background-color: rgb(239,65,48);
+    color: rgb(255,255,255);
+}
+#colorTrainREG {
+    background-color: rgb(80,183,72);
+    color: rgb(255,255,255);
+}
+
+#colorTrainLYN {
+    background-color: rgb(253,186,88);
+    color: rgb(255,255,255);
+}
+
+#colorTrainS {
+    background-color: rgb(0,178,239);
+    color: rgb(255,255,255);
+}
+#colorTrainOther {
+    background-color: rgb(245,138,31);
+    color: rgb(255,255,255);
+}

@@ -150,27 +150,27 @@ async function getTrainData(stationId, date, time) {
         switch (t.type) {
           case 'IC':
             const ic = document.createElement('p');
-            ic.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
+            ic.innerHTML = `<span id="colorTrainIC">${t.name}</span> --> ${t.direction} | ${t.time}`;
             trainIC.appendChild(ic);
             break;
           case 'REG':
             const reg = document.createElement('p');
-            reg.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
+            reg.innerHTML = `<span id="colorTrainREG">${t.name}</span> --> ${t.direction} | ${t.time}`;
             trainRE.appendChild(reg);
             break;
           case 'S':
             const s = document.createElement('p');
-            s.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
+            s.innerHTML = `<span id="colorTrainS">${t.name}</span> --> ${t.direction} | ${t.time}`;
             train_s.appendChild(s);
             break;
           case 'LYN':
             const lyn = document.createElement('p');
-            lyn.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
+            lyn.innerHTML = `<span id="colorTrainLYN">${t.name}</span> --> ${t.direction} | ${t.time}`;
             trainLyn.appendChild(lyn);
             break;
           default:
             const tog = document.createElement('p');
-            tog.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
+            tog.innerHTML = `<span id="colorTrainOther">${t.name}</span> --> ${t.direction} | ${t.time}`;
             traintog.appendChild(tog);
             break;
         }
@@ -234,17 +234,17 @@ async function getBusData(stationId, date, time) {
         switch (b.type) {
           case 'BUS':
             const busBus = document.createElement('p');
-            busBus.innerText = `${b.name} --> ${b.direction} | ${b.time}`;
+            busBus.innerHTML = `<span id="colorBus">${b.name}</span> --> ${b.direction} | ${b.time}`;
             bus.appendChild(busBus);
             break;
           case 'EXB':
             const busExp = document.createElement('p');
-            busExp.innerText = `${b.name} --> ${b.direction} | ${b.time}`;
+            busExp.innerHTML = `<span id="colorBus">${b.name}</span> --> ${b.direction} | ${b.time}`;
             exp.appendChild(busExp);
             break;
           default:
             const busOther = document.createElement('p');
-            busOther.innerText = `${b.name} --> ${b.direction} | ${b.time}`;
+            busOther.innerHTML = `<span id="colorBusOther">${b.name}</span> --> ${b.direction} | ${b.time}`;
             other.appendChild(busOther);
             break;
         }
@@ -293,12 +293,12 @@ async function getMetroData(stationId, date, time) {
         switch (m.type) {
           case 'M':
             const metroMetro = document.createElement('p');
-            metroMetro.innerText = `${m.name} --> ${m.direction} | ${m.time}`;
+            metroMetro.innerHTML = `<span id="colorMetro">${m.name}</span> --> ${m.direction} | ${m.time}`;
             metro.appendChild(metroMetro);
             break;
           default:
             const metroOther = document.createElement('p');
-            metroOther.innerText = `${m.name} --> ${m.direction} | ${m.time}`;
+            metroOther.innerHTML = `<span id="colorMetro">${m.name}</span> --> ${m.direction} | ${m.time}`;
             other.appendChild(metroOther);
             break;
         }
