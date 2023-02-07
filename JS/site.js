@@ -159,11 +159,11 @@ async function getTrainData(stationId, date, time) {
   const train_s = document.querySelector('#train-s');
   const trainLyn = document.querySelector('#trainLyn')
   const traintog = document.querySelector('#tog');
-  
+
   const trainResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useMetro=0&format=json`);
   const trainData = await trainResponse.json();
   console.log(trainData);
-console.log(trainResponse);
+  console.log(trainResponse);
   if (trainData.DepartureBoard.Departure == 0 || trainData.DepartureBoard.Departure == null) {
     console.log("No train data found for this stop");
     removeOld(trainIC);
@@ -197,19 +197,19 @@ console.log(trainResponse);
             trainRE.appendChild(reg);
             break;
           case 'S':
-            const s =  document.createElement('p');
+            const s = document.createElement('p');
             s.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
             train_s.appendChild(s);
             break;
-            case 'LYN':
-              const lyn = document.createElement('p');
-              lyn.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
-              trainLyn.appendChild(lyn);
-              break;
+          case 'LYN':
+            const lyn = document.createElement('p');
+            lyn.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
+            trainLyn.appendChild(lyn);
+            break;
           default:
             const tog = document.createElement('p');
             tog.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
-            traintog.appendChild(tog);          
+            traintog.appendChild(tog);
             break;
         }
       }
@@ -348,7 +348,7 @@ async function getMetroData(stationId, date, time) {
             const metroMetro = document.createElement('p');
             metroMetro.innerText = `${m.name} --> ${m.direction} | ${m.time}`;
             metro.appendChild(metroMetro);
-          break;
+            break;
           default:
             const metroOther = document.createElement('p');
             metroOther.innerText = `${m.name} --> ${m.direction} | ${m.time}`;
