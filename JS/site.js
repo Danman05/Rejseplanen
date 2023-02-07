@@ -58,7 +58,7 @@ list.addEventListener('click', (event) => {
     list.style.display = 'none';
     event.stopPropagation();
   }
-  
+
 });
 
 // Debounce function to limit the number of API calls
@@ -100,7 +100,7 @@ async function searchJourney() {
 
       stationId = xlm.getElementsByTagName("StopLocation")[0].getAttribute("id");
       stationName = xlm.getElementsByTagName("StopLocation")[0].getAttribute("name");
-      
+
       if (resultFor.textContent.trim()) {
         resultFor.textContent = "";
       }
@@ -280,7 +280,7 @@ async function getMetroData(stationId, date, time) {
 
   const metroResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useTog=0&format=json`);
   const metroData = await metroResponse.json();
-  
+
   removeOld(metro);
 
   if (metroData.DepartureBoard.Departure == 0 || metroData.DepartureBoard.Departure == null) {
