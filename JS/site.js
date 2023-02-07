@@ -12,6 +12,21 @@
 const inputField = document.querySelector("#Station");
 const resultFor = document.querySelector('#result-for')
 const list = document.querySelector('#results-list');
+
+
+const toggleButton = document.querySelector("#toggleButton");
+const collapsibleDiv = document.querySelector("#collapsibleDiv");
+
+toggleButton.addEventListener("click", function () {
+  if (collapsibleDiv.style.display === "none") {
+    collapsibleDiv.style.display = "block";
+    toggleButton.innerHTML = "Skjul tog";
+  } else {
+    collapsibleDiv.style.display = 'none';
+    toggleButton.innerHTML = "Udvid tog";
+  }
+});
+
 // const showMoreBtn = document.querySelector("#show-more-btn");
 
 let stopNames;
@@ -21,7 +36,6 @@ input.addEventListener('input', debounce(async function () {
   // If input.value.length is greater than 3 it can diffrent stops, the user can click the button to generate more stops
   if (input.value.length < 3) {
     list.style.display = 'none';
-
     return;
   }
 
@@ -143,82 +157,95 @@ async function getTrainData(stationId, date, time) {
   const trainIC = document.querySelector('#trainIC');
   const trainRE = document.querySelector('#trainRE');
   const train_s = document.querySelector('#train-s');
+  const trainLyn = document.querySelector('#trainLyn')
   const traintog = document.querySelector('#tog');
+  
   const trainResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useMetro=0&format=json`);
   const trainData = await trainResponse.json();
+  console.log(trainData);
+console.log(trainResponse);
   if (trainData.DepartureBoard.Departure == 0 || trainData.DepartureBoard.Departure == null) {
     console.log("No train data found for this stop");
-    if (train.textContent.trim()) {
-      while (train.firstChild) {
-        train.removeChild(element.firstChild);
-      }
-    }
     removeOld(trainIC);
     removeOld(trainRE);
     removeOld(train_s);
     removeOld(traintog);
+    removeOld(trainLyn);
   }
   else {
 
     try {
-      if (train.textContent.trim()) {
-        while (train.firstChild) {
-          train.removeChild(element.firstChild);
-        }
-      }
       removeOld(trainIC);
       removeOld(trainRE);
       removeOld(train_s);
+      removeOld(trainLyn)
       removeOld(traintog);
-      const array = trainData.DepartureBoard.Departure;
-      const hr = document.createElement("hr");
 
-      for (const t of array) {
+      let array = trainData.DepartureBoard.Departure;
+
+      for (let t of array) {
 
         switch (t.type) {
           case 'IC':
             const ic = document.createElement('p');
-            ic.innerText = `${t.name} ${t.time} ${t.direction}`;
+            ic.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
             trainIC.appendChild(ic);
             break;
           case 'REG':
             const reg = document.createElement('p');
-            reg.innerText = `${t.name} ${t.time} ${t.direction}`;
+            reg.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
             trainRE.appendChild(reg);
             break;
           case 'S':
-            const s =  document.createElement('p')
-            s.innerText = `${t.name} ${t.time} ${t.direction}`;
+            const s =  document.createElement('p');
+            s.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
             train_s.appendChild(s);
             break;
-          case 'TOG':
-            const tog = document.createElement('p');
-            tog.innerText = `${t.name} ${t.time} ${t.direction}`;
-            traintog.appendChild(tog);
-            break;
+            case 'LYN':
+              const lyn = document.createElement('p');
+              lyn.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
+              trainLyn.appendChild(lyn);
+              break;
           default:
+            const tog = document.createElement('p');
+            tog.innerText = `${t.name} --> ${t.direction} | ${t.time}`;
+            traintog.appendChild(tog);          
             break;
         }
       }
 
 
-      if (trainIC.innerHTML !== "" || trainRE.innerHTML !== "" || train_s.innerHTML !== "" || traintog.innerHTML !== "" ) {
-        let trainHeader = createElement("h1", "Tog");
-        train.insertBefore(trainHeader, train.firstChild)
-      }
+      // if (trainIC.innerHTML !== "" || trainRE.innerHTML !== "" || train_s.innerHTML !== "" || traintog.innerHTML !== "" ) {
+      //   let trainHeader = createElement("h1", "Tog");
+      //   train.insertBefore(trainHeader, train.firstChild)
+      // }
       if (trainIC.innerHTML !== "") {
+        const hrIc = document.createElement("hr");
+        trainIC.appendChild(hrIc);
         let icHeader = createElement("h4", "Intercity");
         trainIC.insertBefore(icHeader, trainIC.firstChild);
       }
       if (trainRE.innerHTML !== "") {
+        const hrRe = document.createElement("hr");
+        trainRE.appendChild(hrRe);
         let regHeader = createElement("h4", "Regional");
         trainRE.insertBefore(regHeader, trainRE.firstChild);
       }
       if (train_s.innerHTML !== "") {
+        const hrS = document.createElement("hr");
+        train_s.appendChild(hrS);
         let sHeader = createElement("h4", "S-tog");
         train_s.insertBefore(sHeader, train_s.firstChild);
       }
+      if (trainLyn.innerText !== "") {
+        const hrLyn = document.createElement("hr");
+        trainLyn.appendChild(hrLyn);
+        let lynHeader = createElement("h4", "Lyn-tog");
+        trainLyn.insertBefore(lynHeader, trainLyn.firstChild);
+      }
       if (traintog.innerHTML !== "") {
+        const hrOther = document.createElement("hr");
+        traintog.appendChild(hrOther);
         let togHeader = createElement("h4", "Øvrige tog");
         traintog.insertBefore(togHeader, traintog.firstChild);
       }
@@ -231,39 +258,79 @@ async function getTrainData(stationId, date, time) {
 }
 
 async function getBusData(stationId, date, time) {
-  const bus = document.querySelector("#bus");
+  const bus = document.querySelector("#busBus");
+  const exp = document.querySelector("#busExb");
+  const other = document.querySelector("#busOther");
   const busResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useTog=0&useMetro=0&format=json`);
   const busData = await busResponse.json();
+  console.log(busData);
+  console.log(busResponse);
   if (busData.DepartureBoard.Departure == 0 || busData.DepartureBoard.Departure == null) {
     console.log("No bus data found for this stop")
     removeOld(bus);
+    removeOld(exp);
+    removeOld(other);
   }
 
   else {
     try {
       removeOld(bus);
+      removeOld(exp);
+      removeOld(other);
       const array = busData.DepartureBoard.Departure;
-      const h2 = document.createElement("h2");
-      h2.innerText = "Bus";
-      h2.id = "tmp"
-      bus.appendChild(h2)
+
       for (const b of array) {
-        const paragraph = document.createElement("p");
-        paragraph.innerText = `${b.name} Tid: ${b.time} Retning: ${b.direction}`;
-        bus.appendChild(paragraph);
+
+        switch (b.type) {
+          case 'BUS':
+            const busBus = document.createElement('p');
+            busBus.innerText = `${b.name} --> ${b.direction} | ${b.time}`;
+            bus.appendChild(busBus);
+            break;
+          case 'EXB':
+            const busExp = document.createElement('p');
+            busExp.innerText = `${b.name} --> ${b.direction} | ${b.time}`;
+            exp.appendChild(busExp);
+            break;
+          default:
+            const busOther = document.createElement('p');
+            busOther.innerText = `${b.name} --> ${b.direction} | ${b.time}`;
+            other.appendChild(busOther);
+            break;
+        }
       }
-      const hr = document.createElement("hr");
-      bus.appendChild(hr);
+
+      if (bus.innerHTML !== "") {
+        const hrBus = document.createElement("hr");
+        bus.appendChild(hrBus);
+        let busHeader = createElement("h4", "Bus");
+        bus.insertBefore(busHeader, bus.firstChild);
+      }
+      if (exp.innerHTML !== "") {
+        const hrExb = document.createElement("hr");
+        exp.appendChild(hrExb);
+        let exbHeader = createElement("h4", "Expressbus");
+        exp.insertBefore(exbHeader, exp.firstChild);
+      }
+      if (other.innerHTML !== "") {
+        const hrOther = document.createElement("hr");
+        other.appendChild(hrOther);
+        let otherHeader = createElement("h4", "Øvrige Busser");
+        other.insertBefore(otherHeader, other.firstChild);
+      }
     } catch (error) {
 
     }
   }
 }
 async function getMetroData(stationId, date, time) {
-  const metro = document.querySelector("#metro");
+  const metro = document.querySelector("#metroMetro");
+  const other = document.querySelector('#metroOther');
   const metroResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useTog=0&format=json`);
   console.log(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useTog=0&format=json`);
   const metroData = await metroResponse.json();
+  console.log(metroData);
+  console.log(metroResponse);
   if (metroData.DepartureBoard.Departure == 0 || metroData.DepartureBoard.Departure == null) {
     console.log("No metro data found for this stop")
     removeOld(metro)
@@ -273,19 +340,37 @@ async function getMetroData(stationId, date, time) {
     try {
       removeOld(metro)
       const array = metroData.DepartureBoard.Departure;
-      const h2 = document.createElement("h2");
-      h2.innerText = "Metro";
-      h2.id = "tmp"
-      metro.appendChild(h2)
+
       for (const m of array) {
-        const paragraph = document.createElement("p");
-        paragraph.innerText = `${m.name} Tid: ${m.time} Retning: ${m.direction}`;
-        metro.appendChild(paragraph);
+
+        switch (m.type) {
+          case 'M':
+            const metroMetro = document.createElement('p');
+            metroMetro.innerText = `${m.name} --> ${m.direction} | ${m.time}`;
+            metro.appendChild(metroMetro);
+          break;
+          default:
+            const metroOther = document.createElement('p');
+            metroOther.innerText = `${m.name} --> ${m.direction} | ${m.time}`;
+            other.appendChild(metroOther);
+            break;
+        }
       }
-      const hr = document.createElement("hr");
-      metro.appendChild(hr);
+      if (metro.innerHTML !== "") {
+        const hrMetro = document.createElement("hr");
+        metro.appendChild(hrMetro);
+        let metroHeader = createElement("h4", "Metro");
+        metro.insertBefore(metroHeader, metro.firstChild);
+      }
+      if (other.innerHTML !== "") {
+        const hrOther = document.createElement("hr");
+        other.appendChild(hrOther);
+        let otherHeader = createElement("h4", "Øvrige metro");
+        other.insertBefore(otherHeader, other.firstChild);
+      }
+
     } catch (error) {
-      //console.error(error);
+      console.error(error);
     }
   }
 }

@@ -66,10 +66,3 @@ li:hover {
     background-color: lightgray;
     cursor: pointer;
 }
-
-#columns {
-    text-align: center;
-    justify-content: center;
-    column-count: 2;
-    column-rule: 1px solid lightblue;
-}
