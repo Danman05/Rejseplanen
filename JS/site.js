@@ -134,7 +134,7 @@ async function getTrainData(stationId, date, time) {
 
   const trainResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useMetro=0&format=json`);
   const trainData = await trainResponse.json();
-
+  console.log(trainData);
   removeOld(trainIC);
   removeOld(trainRE);
   removeOld(train_s);
@@ -185,42 +185,13 @@ async function getTrainData(stationId, date, time) {
             break;
         }
       }
-      if (trainIC.innerHTML !== "") {
-        const hrIc = document.createElement("hr");
-        trainIC.appendChild(hrIc);
-        let icHeader = createElement("h4", "Intercity");
-        trainIC.insertBefore(icHeader, trainIC.firstChild);
-      }
-      if (trainRE.innerHTML !== "") {
-        const hrRe = document.createElement("hr");
-        trainRE.appendChild(hrRe);
-        let regHeader = createElement("h4", "Regional");
-        trainRE.insertBefore(regHeader, trainRE.firstChild);
-      }
-      if (train_s.innerHTML !== "") {
-        const hrS = document.createElement("hr");
-        train_s.appendChild(hrS);
-        let sHeader = createElement("h4", "S-tog");
-        train_s.insertBefore(sHeader, train_s.firstChild);
-      }
-      if (trainLyn.innerText !== "") {
-        const hrLyn = document.createElement("hr");
-        trainLyn.appendChild(hrLyn);
-        let lynHeader = createElement("h4", "Lyn-tog");
-        trainLyn.insertBefore(lynHeader, trainLyn.firstChild);
-      }
-      if (trainLet.innerHTML !== "") {
-        const hrLet = document.createElement("hr");
-        trainLet.appendChild(hrLet);
-        let letHeader = createElement("h4", "Letbane");
-        trainLet.insertBefore(letHeader, trainLet.firstChild);
-      }
-      if (traintog.innerHTML !== "") {
-        const hrOther = document.createElement("hr");
-        traintog.appendChild(hrOther);
-        let togHeader = createElement("h4", "Øvrige tog");
-        traintog.insertBefore(togHeader, traintog.firstChild);
-      }
+      addHeaderText(trainIC, "Intercity");
+      addHeaderText(trainRE, "Regional");
+      addHeaderText(train_s, "S-tog");
+      addHeaderText(trainLyn, "Lyn-tog");
+      addHeaderText(trainLet, "Letbane");
+      addHeaderText(traintog, "Øvrige tog");
+
     } catch (error) {
       console.log(error);
     }
@@ -236,6 +207,7 @@ async function getBusData(stationId, date, time) {
   const busResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useTog=0&useMetro=0&format=json`);
   const busData = await busResponse.json();
   console.log(busData);
+
   removeOld(bus);
   removeOld(exp);
   removeOld(other);
@@ -268,24 +240,10 @@ async function getBusData(stationId, date, time) {
             break;
         }
       }
-      if (bus.innerHTML !== "") {
-        const hrBus = document.createElement("hr");
-        bus.appendChild(hrBus);
-        let busHeader = createElement("h4", "Bus");
-        bus.insertBefore(busHeader, bus.firstChild);
-      }
-      if (exp.innerHTML !== "") {
-        const hrExb = document.createElement("hr");
-        exp.appendChild(hrExb);
-        let exbHeader = createElement("h4", "Expressbus");
-        exp.insertBefore(exbHeader, exp.firstChild);
-      }
-      if (other.innerHTML !== "") {
-        const hrOther = document.createElement("hr");
-        other.appendChild(hrOther);
-        let otherHeader = createElement("h4", "Øvrige Busser");
-        other.insertBefore(otherHeader, other.firstChild);
-      }
+      addHeaderText(bus, "Bus");
+      addHeaderText(exp, "Expressbus");
+      addHeaderText(other, "Øvrige Busser");
+
     } catch (error) {
       console.log(error);
     }
@@ -301,6 +259,8 @@ async function getMetroData(stationId, date, time) {
   const metroResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useTog=0&format=json`);
   const metroData = await metroResponse.json();
   console.log(metroData);
+
+
   removeOld(metro);
   removeOld(other);
   removeOld(boat);
@@ -333,30 +293,24 @@ async function getMetroData(stationId, date, time) {
             break;
         }
       }
-      if (metro.innerHTML !== "") {
-        const hrMetro = document.createElement("hr");
-        metro.appendChild(hrMetro);
-        let metroHeader = createElement("h4", "Metro");
-        metro.insertBefore(metroHeader, metro.firstChild);
-      }
-      if (boat.innerHTML !== "") {
-        const hrBoat = document.createElement("hr");
-        boat.appendChild(hrBoat);
-        let boatHeader = createElement("h4", "Færge");
-        boat.insertBefore(boatHeader, boat.firstChild);
-      }
-      if (other.innerHTML !== "") {
-        const hrOther = document.createElement("hr");
-        other.appendChild(hrOther);
-        let otherHeader = createElement("h4", "Øvrige metro");
-        other.insertBefore(otherHeader, other.firstChild);
-      }
+      addHeaderText(metro, "Metro");
+      addHeaderText(boat, "Færge");
+      addHeaderText(other, "Øvrige metro");
+
     } catch (error) {
       console.error(error);
     }
   }
 }
-
+function addHeaderText(element, innerText) {
+  if (element.innerHTML !== "") {
+    const hr = document.createElement("hr");
+    element.appendChild(hr)
+    const elementHeader = document.createElement("h4");
+    elementHeader.innerText = innerText;
+    element.insertBefore(elementHeader, element.firstChild);
+  }
+}
 function removeOld(element) {
   if (element.textContent.trim()) {
     element.textContent = "";

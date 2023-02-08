@@ -118,21 +118,33 @@ li:hover {
     color: rgb(255, 255, 255);
 }
 
-#trainIC, #trainRE, #train-s, #trainLyn, #trainLet , #tog {
+#trainIC,
+#trainRE,
+#train-s,
+#trainLyn,
+#trainLet,
+#tog {
     width: 50%;
     margin: auto;
     background-color: #ffffff;
 }
-#busBus, #busExb, #busOther {
+
+#busBus,
+#busExb,
+#busOther {
     width: 50%;
     margin: auto;
     background-color: #ffffff;
 }
-#metroMetro, #metroOther, #boat {
+
+#metroMetro,
+#metroOther,
+#boat {
     width: 50%;
     margin: auto;
     background-color: #ffffff;
 }
+
 .background {
     background-color: lightgray;
 }
