@@ -128,7 +128,8 @@ async function getTrainData(stationId, date, time) {
   const trainIC = document.querySelector('#trainIC');
   const trainRE = document.querySelector('#trainRE');
   const train_s = document.querySelector('#train-s');
-  const trainLyn = document.querySelector('#trainLyn')
+  const trainLyn = document.querySelector('#trainLyn');
+  const trainLet = document.querySelector('#trainLet')
   const traintog = document.querySelector('#tog');
 
   const trainResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useMetro=0&format=json`);
@@ -139,6 +140,7 @@ async function getTrainData(stationId, date, time) {
   removeOld(train_s);
   removeOld(traintog);
   removeOld(trainLyn);
+  removeOld(trainLet);
 
   if (trainData.DepartureBoard.Departure == 0 || trainData.DepartureBoard.Departure == null) {
     console.log("No train data found for this stop");
@@ -150,27 +152,35 @@ async function getTrainData(stationId, date, time) {
         switch (t.type) {
           case 'IC':
             const ic = document.createElement('p');
-            ic.innerHTML = `<span id="colorTrainIC">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time}`;
+            ic.innerHTML = `<span id="colorTrainIC">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time} - ${t.date}`;
             trainIC.appendChild(ic);
             break;
           case 'REG':
             const reg = document.createElement('p');
-            reg.innerHTML = `<span id="colorTrainREG">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time}`;
+            reg.innerHTML = `<span id="colorTrainREG">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time} - ${t.date}`;
             trainRE.appendChild(reg);
             break;
           case 'S':
             const s = document.createElement('p');
-            s.innerHTML = `<span id="colorTrainS">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time}`;
+            s.innerHTML = `<span id="colorTrainS">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time} - ${t.date}`;
             train_s.appendChild(s);
             break;
           case 'LYN':
             const lyn = document.createElement('p');
-            lyn.innerHTML = `<span id="colorTrainLYN">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time}`;
+            lyn.innerHTML = `<span id="colorTrainLYN">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time}  - ${t.date}`;
             trainLyn.appendChild(lyn);
+            break;
+          case 'LET':
+            const letTrain = document.createElement('p');
+            letTrain.innerHTML = `<span id="colorTrainOther">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time}  - ${t.date}`;
+            trainLet.appendChild(letTrain);
+            break;
+          case 'F':
+            // Do nothing
             break;
           default:
             const tog = document.createElement('p');
-            tog.innerHTML = `<span id="colorTrainOther">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time}`;
+            tog.innerHTML = `<span id="colorTrainOther">${t.name}</span> → <strong>${t.direction}</strong> | ${t.time}  - ${t.date}`;
             traintog.appendChild(tog);
             break;
         }
@@ -199,6 +209,12 @@ async function getTrainData(stationId, date, time) {
         let lynHeader = createElement("h4", "Lyn-tog");
         trainLyn.insertBefore(lynHeader, trainLyn.firstChild);
       }
+      if (trainLet.innerHTML !== "") {
+        const hrLet = document.createElement("hr");
+        trainLet.appendChild(hrLet);
+        let letHeader = createElement("h4", "Letbane");
+        trainLet.insertBefore(letHeader, trainLet.firstChild);
+      }
       if (traintog.innerHTML !== "") {
         const hrOther = document.createElement("hr");
         traintog.appendChild(hrOther);
@@ -219,7 +235,7 @@ async function getBusData(stationId, date, time) {
 
   const busResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useTog=0&useMetro=0&format=json`);
   const busData = await busResponse.json();
-
+  console.log(busData);
   removeOld(bus);
   removeOld(exp);
   removeOld(other);
@@ -234,17 +250,20 @@ async function getBusData(stationId, date, time) {
         switch (b.type) {
           case 'BUS':
             const busBus = document.createElement('p');
-            busBus.innerHTML = `<span id="colorBus">${b.name}</span> → <strong>${b.direction}</strong> | ${b.time}`;
+            busBus.innerHTML = `<span id="colorBus">${b.name}</span> → <strong>${b.direction}</strong> | ${b.time} - ${b.date}`;
             bus.appendChild(busBus);
             break;
           case 'EXB':
             const busExp = document.createElement('p');
-            busExp.innerHTML = `<span id="colorBus">${b.name}</span> → <strong>${b.direction}</strong> | ${b.time}`;
+            busExp.innerHTML = `<span id="colorBus">${b.name}</span> → <strong>${b.direction}</strong> | ${b.time} - ${b.date}`;
             exp.appendChild(busExp);
+            break;
+          case 'LET':
+            // Do nothing
             break;
           default:
             const busOther = document.createElement('p');
-            busOther.innerHTML = `<span id="colorBusOther">${b.name}</span> → <strong>${b.direction}</strong> | ${b.time}`;
+            busOther.innerHTML = `<span id="colorBusOther">${b.name}</span> → <strong>${b.direction}</strong> | ${b.time} - ${b.date}`;
             other.appendChild(busOther);
             break;
         }
@@ -277,11 +296,14 @@ async function getMetroData(stationId, date, time) {
 
   const metro = document.querySelector("#metroMetro");
   const other = document.querySelector('#metroOther');
+  const boat = document.querySelector('#boat')
 
   const metroResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useTog=0&format=json`);
   const metroData = await metroResponse.json();
-
+  console.log(metroData);
   removeOld(metro);
+  removeOld(other);
+  removeOld(boat);
 
   if (metroData.DepartureBoard.Departure == 0 || metroData.DepartureBoard.Departure == null) {
     console.log("No metro data found for this stop");
@@ -293,12 +315,20 @@ async function getMetroData(stationId, date, time) {
         switch (m.type) {
           case 'M':
             const metroMetro = document.createElement('p');
-            metroMetro.innerHTML = `<span id="colorMetro">${m.name}</span> → <strong>${m.direction}</strong> | ${m.time}`;
+            metroMetro.innerHTML = `<span id="colorMetro">${m.name}</span> → <strong>${m.direction}</strong> | ${m.time} - ${m.date}`;
             metro.appendChild(metroMetro);
+            break;
+          case 'LET':
+            // Do nothing
+            break;
+          case 'F':
+            const boatTrip = document.createElement('p');
+            boatTrip.innerHTML = `<span id="colorMetro">${m.name}</span> → <strong>${m.direction}</strong> | ${m.time} - ${m.date}`;
+            boat.appendChild(boatTrip);
             break;
           default:
             const metroOther = document.createElement('p');
-            metroOther.innerHTML = `<span id="colorMetro">${m.name}</span> → <strong>${m.direction}</strong> | ${m.time}`;
+            metroOther.innerHTML = `<span id="colorMetro">${m.name}</span> → <strong>${m.direction}</strong> | ${m.time} - ${m.date}`;
             other.appendChild(metroOther);
             break;
         }
@@ -308,6 +338,12 @@ async function getMetroData(stationId, date, time) {
         metro.appendChild(hrMetro);
         let metroHeader = createElement("h4", "Metro");
         metro.insertBefore(metroHeader, metro.firstChild);
+      }
+      if (boat.innerHTML !== "") {
+        const hrBoat = document.createElement("hr");
+        boat.appendChild(hrBoat);
+        let boatHeader = createElement("h4", "Færge");
+        boat.insertBefore(boatHeader, boat.firstChild);
       }
       if (other.innerHTML !== "") {
         const hrOther = document.createElement("hr");
