@@ -134,7 +134,7 @@ async function getTrainData(stationId, date, time) {
 
   const trainResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useMetro=0&format=json`);
   const trainData = await trainResponse.json();
-  console.log(trainData);
+
   removeOld(trainIC);
   removeOld(trainRE);
   removeOld(train_s);
@@ -143,7 +143,7 @@ async function getTrainData(stationId, date, time) {
   removeOld(trainLet);
 
   if (trainData.DepartureBoard.Departure == 0 || trainData.DepartureBoard.Departure == null) {
-    console.log("No train data found for this stop");
+    // Do nothing
   }
   else {
     try {
@@ -206,14 +206,13 @@ async function getBusData(stationId, date, time) {
 
   const busResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useTog=0&useMetro=0&format=json`);
   const busData = await busResponse.json();
-  console.log(busData);
 
   removeOld(bus);
   removeOld(exp);
   removeOld(other);
 
   if (busData.DepartureBoard.Departure == 0 || busData.DepartureBoard.Departure == null) {
-    console.log("No bus data found for this stop");
+    // Do nothing
   }
   else {
     try {
@@ -231,6 +230,9 @@ async function getBusData(stationId, date, time) {
             exp.appendChild(busExp);
             break;
           case 'LET':
+            // Do nothing
+            break;
+          case 'F':
             // Do nothing
             break;
           default:
@@ -258,15 +260,13 @@ async function getMetroData(stationId, date, time) {
 
   const metroResponse = await fetch(`http://xmlopen.rejseplanen.dk/bin/rest.exe/departureBoard?id=${stationId}&date=${date}&time=${time}&useBus=0&useTog=0&format=json`);
   const metroData = await metroResponse.json();
-  console.log(metroData);
-
 
   removeOld(metro);
   removeOld(other);
   removeOld(boat);
 
   if (metroData.DepartureBoard.Departure == 0 || metroData.DepartureBoard.Departure == null) {
-    console.log("No metro data found for this stop");
+    // Do nothing
   }
   else {
     try {

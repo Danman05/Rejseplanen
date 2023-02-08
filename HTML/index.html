@@ -19,21 +19,31 @@
         <div class="centered">
             <label class="departureBoard">Afgangstavle</label>
 
-            <form method="get" class="inputForm" onsubmit="return false;">
-                <!-- <button id="show-more-btn" style="display: none;">Se flere resultater</button> -->
+            <!-- Form that does not refresh page since onsubmit is return false; -->
+            <form method="post" class="inputForm" onsubmit="return false;">
+
+                <!-- Input for the stop/station name -->
                 <input class="input-location" type="text" placeholder="Skriv stop eller station" name="station"
                     id="Station" autocomplete="off" required>
+
+                <!-- ul will contain top 10 search results -->
                 <ul id="results-list"></ul>
 
+                <!-- Input type datetime-local -->
                 <input class="input-date" type="datetime-local" name="date" id="Date" required>
+
+                <!-- button that has an onclick event, which will start the SearchJourney function -->
                 <button class="button-field" type="submit" onclick="searchJourney()">Find</button>
             </form>
         </div>
     </div>
     <br>
     <br>
+
+    <!-- #result-for is to display the searched stop/station -->
     <div id="result-for"></div>
     <hr>
+    <!-- Train section -->
     <div id="train">
         <div id="trainIC"></div>
         <div id="trainRE"></div>
@@ -42,17 +52,20 @@
         <div id="trainLet"></div>
         <div id="tog"></div>
     </div>
+    <!-- Bus section -->
     <div id="bus">
         <div id="busBus"></div>
         <div id="busExb"></div>
         <div id="busOther"></div>
     </div>
+    <!-- Metro section and boat -->
     <div id="metro">
         <div id="metroMetro"></div>
         <div id="boat"></div>
         <div id="metroOther"></div>
 
     </div>
+
     <script src="../JS/site.js"></script>
 </body>
 
