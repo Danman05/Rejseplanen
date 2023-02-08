@@ -1,9 +1,30 @@
+/* 
+Reset the margin and padding
+*/
 body {
     margin: 0;
     padding: 0;
     background-color: #F2F3F5;
 }
 
+/* 
+    header area
+*/
+header {
+    background-color: #ffffff;
+    position: relative;
+    min-height: 70px;
+    box-sizing: border-box;
+}
+
+#container {
+    background-color: white;
+    display: flex;
+    align-items: center;
+}
+/* 
+    Search area
+*/
 .searchDiv {
     background: #000d2a;
     width: 650px;
@@ -51,18 +72,6 @@ body {
     width: 75px;
 }
 
-header {
-    background-color: #ffffff;
-    position: relative;
-    min-height: 70px;
-    box-sizing: border-box;
-}
-
-#container {
-    background-color: white;
-    display: flex;
-    align-items: center;
-}
 
 #results-list {
     position: absolute;
@@ -78,6 +87,9 @@ li:hover {
     cursor: pointer;
 }
 
+/*
+    Color codes for different transportation 
+ */
 #colorBus {
     background-color: rgb(253, 174, 0);
     color: rgb(255, 255, 255);
@@ -118,6 +130,9 @@ li:hover {
     color: rgb(255, 255, 255);
 }
 
+/* 
+    Makes the returned data appear in the middle and responsive
+*/
 #trainIC,
 #trainRE,
 #train-s,
@@ -143,8 +158,4 @@ li:hover {
     width: 50%;
     margin: auto;
     background-color: #ffffff;
-}
-
-.background {
-    background-color: lightgray;
 }
