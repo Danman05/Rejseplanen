@@ -371,6 +371,6 @@ function removeOld(element) {
   if (element.textContent !== "") {
 
     // Makes textContent empty
-    element.textContent = "";
+    element.textContent = ""
   }
 }
